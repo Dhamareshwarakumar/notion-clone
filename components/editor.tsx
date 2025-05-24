@@ -1,10 +1,17 @@
 "use client";
 
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
-import { BlockNoteView, useBlockNote } from "@blocknote/react";
+import {
+  BlockNoteView,
+  useBlockNote,
+  SuggestionMenuController,
+  getDefaultSlashMenuItems,
+  filterSuggestionItems, // Added for filtering
+} from "@blocknote/react";
 import "@blocknote/core/style.css";
 import { useTheme } from "next-themes";
 import { useEdgeStore } from "@/lib/edgestore";
+import { RiListCheck2 } from "react-icons/ri"; // Added for checklist icon
 
 interface EditorProps {
   onChange: (value: string) => void;
@@ -33,12 +40,46 @@ const Editor = ({ onChange, initialContent, editable }: EditorProps) => {
     },
     uploadFile:handleUpload
   });
+
+  // Gets the default slash menu items and adds the custom checkListItem.
+  const customGetSlashMenuItems = (
+    editor: BlockNoteEditor
+  ): typeof defaultSlashMenuItems => {
+    const defaultItems = getDefaultSlashMenuItems(editor); // Get default slash items
+
+    const checkListItem = {
+      title: "Checklist",
+      onItemClick: () => {
+        editor.insertBlocks(
+          [{ type: "checkListItem", content: "" }],
+          editor.getTextCursorPosition().block,
+          "after"
+        );
+      },
+      aliases: ["cl", "todo", "checklist"],
+      group: "Lists",
+      icon: <RiListCheck2 size={18} />,
+      hint: "Create a to-do list",
+    };
+
+    return [...defaultItems, checkListItem];
+  };
+
   return (
     <div>
-      <BlockNoteView
-        editor={editor}
-        theme={resolvedTheme === "dark" ? "dark" : "light"}
-      ></BlockNoteView>
+      <SuggestionMenuController
+        triggerCharacter={"/"}
+        getItems={async (query) =>
+          // @ts-ignore - Assuming filterSuggestionItems can handle the custom item
+          filterSuggestionItems(customGetSlashMenuItems(editor), query)
+        }
+      >
+        <BlockNoteView
+          editor={editor}
+          theme={resolvedTheme === "dark" ? "dark" : "light"}
+          slashMenu={false} // Disable default slash menu
+        ></BlockNoteView>
+      </SuggestionMenuController>
     </div>
   );
 };
