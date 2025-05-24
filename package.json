@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/core": "^7.23.6",
     "@blocknote/core": "^0.10.1",
     "@blocknote/react": "^0.10.1",
     "@clerk/clerk-react": "^4.30.0",
@@ -41,6 +42,9 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.23.6",
+    "@babel/preset-react": "^7.23.6",
+    "@babel/preset-typescript": "^7.23.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
