@@ -4,9 +4,7 @@ const nextConfig = {
         domains: [
             "files.edgestore.dev"
         ]
-    },
-    // Disable SWC and use Babel instead
-    swcMinify: false
+    }
 }
 
 module.exports = nextConfig
